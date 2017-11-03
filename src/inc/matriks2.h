@@ -9,9 +9,8 @@
 class Matriks2
 {
 private:
-  const int m_col = 2;
-
   int m_row;
+  int m_col;
   float m_mat[2][2];
 
 public:
@@ -31,7 +30,9 @@ public:
   void setRow(int row);
   /* set element of Matriks2 at row and col given to elmt
    * row and col is valid number */
-  float getElmt(int row, int col, float elmt);
+  void setElmt(int row, int col, float elmt);
+  /* set element of Matriks2 at row and col given to mat elmt */
+  void setAll(float mat[2][2]);
 
 };
 
