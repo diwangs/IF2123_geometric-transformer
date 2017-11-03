@@ -55,7 +55,8 @@ public:
   Titik2 stretchByX(float k);
   /* shear the Titik2 in y direction by k factor */
   Titik2 stretchByY(float k);
-  /* transform the Titik2 by Matriks2 m */
+  /* transform the Titik2 by Matriks2 m
+   * m is valid Matriks2 */
   Titik2 transform(Matriks2 m);
 
 };
