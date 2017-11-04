@@ -8,6 +8,10 @@
 
 #include "matriks2.h"
 
+#define PI 3.14159265
+#define rad(deg) (deg*PI/180)
+#define deg(rad) (rad*180.0/PI)
+
 class Titik2
 {
 private:
@@ -31,33 +35,38 @@ public:
   void setY(float y);
   
   /* translate the Titik2 */
-  Titik2 translate(float dx, float dy);
+  void translate(float dx, float dy);
   /* dilate the Titik2 from (0,0) */
-  Titik2 dilate(float k);
+  void dilate(float k);
   /* rotate the Titik2 from (0,0) */
-  Titik2 rotateOrigin(float deg);
+  void rotateOrigin(float deg);
   /* rotate the Titik2 from (c_x,c_y) */
-  Titik2 rotate(float deg, float c_x, float c_y);
+  void rotate(float deg, float c_x, float c_y);
   /* reflect the Titik2 by line type:
    * 0 is absis
    * 1 is ordinate
    * 2 is x=y line
    * 3 is x=-y line
    * type is valid number */
-  Titik2 reflectByLine(int type);
+  void reflectByLine(int type);
   /* reflect the Titik2 by point */
-  Titik2 reflectByPoint(float c_x, float c_y);
+  void reflectByPoint(float c_x, float c_y);
   /* shear the Titik2 in x direction by k factor */
-  Titik2 shearByX(float k);
+  void shearByX(float k);
   /* shear the Titik2 in y direction by k factor */
-  Titik2 shearByY(float k);
+  void shearByY(float k);
   /* shear the Titik2 in x direction by k factor */
-  Titik2 stretchByX(float k);
+  void stretchByX(float k);
   /* shear the Titik2 in y direction by k factor */
-  Titik2 stretchByY(float k);
+  void stretchByY(float k);
+  /* transform the Titik2 by Matriks2 m
+   * m element is
+   * a b 
+   * c d */
+  void customTransform(float a, float b, float c, float d);
   /* transform the Titik2 by Matriks2 m
    * m is valid Matriks2 */
-  Titik2 transform(Matriks2 m);
+  void transform(Matriks2 m);
 
 };
 
