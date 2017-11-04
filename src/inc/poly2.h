@@ -11,8 +11,8 @@
 class Poly2
 {
 private:
-  int n_edges;
-  Titik2* corners;
+  int m_n_edges;
+  Titik2* m_corners;
 
 public:
   /* create Poly2 with n edges
@@ -21,11 +21,12 @@ public:
 
   /* get number of edges */
   int getEdge();
+  /* get all corners */
+  Titik2 getCorners();
   /* get i-th corner */
   Titik2 getCorner(int i);
-
-  void setCorner(int i, Titik2 corner);
   /* move i-th corner to corner */
+  void setCorner(int i, Titik2 corner);
 
   /* translate the Poly2 */
   void translate(float dx, float dy);
@@ -61,6 +62,6 @@ public:
    * m is valid Matriks2 */
   void transform(Matriks2 m);
 
-}
+};
 
 #endif

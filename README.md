@@ -11,11 +11,12 @@ Made to fulfill an assignment for Geometric Algebra course at Institut Teknologi
 
 Main Program:
 ```
-g++ src/main.cpp inc/titik.cpp inc/matriks.cpp -lfreeglut -lopengl32 -lglu32 -o bin/algeo
+g++ src/main.cpp src/inc/poly2.cpp src/inc/matriks2.cpp src/inc/titik2.cpp -lfreeglut -lopengl32 -lglu32 -o bin/algeo
 ```
 
-Driver File:
+Test File:
 ```
-g++ test/titik.cpp inc/titik.cpp inc/matriks.cpp -lfreeglut -lopengl32 -lglu32 -o bin/titik
-g++ test/matriks.cpp inc/titik.cpp inc/matriks.cpp -lfreeglut -lopengl32 -lglu32 -o bin/matriks
+g++ test/matriks2.cpp src/inc/matriks2.cpp -o bin/matriks2
+g++ test/titik2.cpp src/inc/titik2.cpp src/inc/matriks2.cpp -o bin/titik2
+g++ test/poly2.cpp src/inc/poly2.cpp src/inc/titik2.cpp src/inc/matriks2.cpp -o bin/poly2
 ```
