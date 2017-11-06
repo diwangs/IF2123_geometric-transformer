@@ -1,5 +1,5 @@
 /**
- * Titik2 Data Type
+ * Poly2 Data Type
  * 
  */
 
