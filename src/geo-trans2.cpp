@@ -5,8 +5,12 @@
 #include <iostream>
 #include <windows.h>
 #include <stdio.h>
+#include "inc/poly2.h"
+#include "inc/titik2.h"
 
-
+// Globals
+std::string cmd;
+Poly2 polygon(1);
 
 void render(void)	{ /* function called whenever redisplay needed */
 	glMatrixMode(GL_MODELVIEW);
@@ -14,15 +18,7 @@ void render(void)	{ /* function called whenever redisplay needed */
 	glLoadIdentity();
 	gluOrtho2D(-500.0, 500.0, -500.0, 500.0);
 	// Kuotak percobaan
-	glBegin(GL_QUADS); { // begin query? 
-		glColor3f(0.0f, 0.0f, 1.0f);    // Color Green
-		glVertex2f(105.0f, 105.0f);    // Top Right Of The Quad (Top)
-		glVertex2f(5.0f, 105.0f);    // Top Left Of The Quad (Top)
-		glVertex2f(5.0f, 5.0f);    // Bottom Left Of The Quad (Top)
-		glVertex2f(105.0f, 5.0f);    // Bottom Right Of The Quad (Top)
-	}
-	// Kuotak percobaan
-	glBegin(GL_POLYGON); { // begin query? 
+	/* glBegin(GL_POLYGON); { // begin query? 
 		glColor3f(0.0f, 0.0f, 1.0f);    // Color Green
 		glVertex2f(105.0f, 105.0f);    // Top Right Of The Quad (Top)
 		glVertex2f(5.0f, 105.0f);    // Top Left Of The Quad (Top)
@@ -30,7 +26,13 @@ void render(void)	{ /* function called whenever redisplay needed */
 		glVertex2f(105.0f, 5.0f);    // Bottom Right Of The Quad (Top)
 		glVertex2f(55.0f, 55.0f);    // Bottom Right Of The Quad (Top)
 	}
-	glEnd();				/* OpenGL draws the filled triangle */
+	glEnd();	*/			/* OpenGL draws the filled triangle */
+	glBegin(GL_POLYGON); {
+		glColor3f(1.0f, 0.0f, 0.0f);
+		for (int i = 0; i < polygon.getEdge(); i++) {
+			glVertex2f(polygon.getCorner(i).getX(), polygon.getCorner(i).getY());
+		}
+	} glEnd();
 	// Garis-garis sumbu
 	glBegin(GL_LINES); { // Sumbu X, merah
 		glColor3f(1.0f,0.0f,0.0f);
@@ -51,6 +53,7 @@ void render(void)	{ /* function called whenever redisplay needed */
 	}
 	glEnd();
 	glFlush();				/* Complete any pending operations */
+	cmd = "";
 }
 
 void resizeWindow(int width, int height) {  // fungsi biar pas windownya diresize jadinya gak ngestretch
@@ -70,13 +73,15 @@ void resizeWindow(int width, int height) {  // fungsi biar pas windownya diresiz
 }
 
 DWORD WINAPI input(LPVOID param) {
-	std::string a;
-	std::cin >> a;
-	std::cout << a << std::endl;
+	while (1 < 2) {
+		std::cin >> cmd;
+		// command here
+		glutPostRedisplay();
+	}
 }
 
 DWORD WINAPI startLoop(LPVOID param) {
-	int argc = 1;
+ 	int argc = 1;
 	glutInit(&argc, NULL);
 
 	glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
@@ -91,23 +96,31 @@ DWORD WINAPI startLoop(LPVOID param) {
 }
 
 int main(int argc, char *argv[]) {
-
   int Data_Of_Thread_1 = 1;
   int Data_Of_Thread_2 = 2;
 
   HANDLE Handle_Of_Thread_1 = 0;
   HANDLE Handle_Of_Thread_2 = 0;
- 	HANDLE Array_Of_Thread_Handles[3];
+	HANDLE Array_Of_Thread_Handles[3];
 
-  Handle_Of_Thread_1 = CreateThread(NULL, 0, startLoop, &Data_Of_Thread_1, 0, NULL);  
-  if (Handle_Of_Thread_1 == NULL)
-      ExitProcess(Data_Of_Thread_1);
+	int n;
+	std::cout << "Segi berapa? "; std::cin >> n;
+	polygon.setEdge(n);
+ 	float x, y;	Titik2 titikTemp(0.0, 0.0);
+ 	for (int i = 0; i < n; i++) {
+		std::cin >> x >> y;
+		titikTemp.setX(x);
+		titikTemp.setY(y);
+		polygon.setCorner(i, titikTemp);
+ 	}
+
+  Handle_Of_Thread_1 = CreateThread(NULL, 0, startLoop, NULL, 0, NULL);  
+  if (Handle_Of_Thread_1 == NULL) ExitProcess(0);
   Handle_Of_Thread_2 = CreateThread(NULL, 0, input, &Data_Of_Thread_2, 0, NULL);  
-  if (Handle_Of_Thread_2 == NULL)
-      ExitProcess(Data_Of_Thread_2);
+  if (Handle_Of_Thread_2 == NULL) ExitProcess(0);
 
   Array_Of_Thread_Handles[0] = Handle_Of_Thread_1;
-  Array_Of_Thread_Handles[1] = Handle_Of_Thread_2;
+	Array_Of_Thread_Handles[1] = Handle_Of_Thread_2;
 
   WaitForMultipleObjects(2, Array_Of_Thread_Handles, TRUE, INFINITE);
   CloseHandle(Handle_Of_Thread_1);

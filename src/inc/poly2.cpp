@@ -22,6 +22,7 @@ Titik2 Poly2::getCorner(int i) {
 }
 
 void Poly2::setEdge(int n) {
+  m_n_edges = n;
   Titik2* m_corners_old = m_corners;
   Titik2* m_corners_new = (Titik2*) realloc(m_corners, n * sizeof(Titik2));
   m_corners = m_corners_new;
