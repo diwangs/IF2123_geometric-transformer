@@ -2,6 +2,11 @@
 
 #include <GL/glut.h>
 #include <math.h>
+#include <iostream>
+#include <windows.h>
+#include <stdio.h>
+
+
 
 void render(void)	{ /* function called whenever redisplay needed */
 	glMatrixMode(GL_MODELVIEW);
@@ -15,6 +20,15 @@ void render(void)	{ /* function called whenever redisplay needed */
 		glVertex2f(5.0f, 105.0f);    // Top Left Of The Quad (Top)
 		glVertex2f(5.0f, 5.0f);    // Bottom Left Of The Quad (Top)
 		glVertex2f(105.0f, 5.0f);    // Bottom Right Of The Quad (Top)
+	}
+	// Kuotak percobaan
+	glBegin(GL_POLYGON); { // begin query? 
+		glColor3f(0.0f, 0.0f, 1.0f);    // Color Green
+		glVertex2f(105.0f, 105.0f);    // Top Right Of The Quad (Top)
+		glVertex2f(5.0f, 105.0f);    // Top Left Of The Quad (Top)
+		glVertex2f(5.0f, 5.0f);    // Bottom Left Of The Quad (Top)
+		glVertex2f(105.0f, 5.0f);    // Bottom Right Of The Quad (Top)
+		glVertex2f(55.0f, 55.0f);    // Bottom Right Of The Quad (Top)
 	}
 	glEnd();				/* OpenGL draws the filled triangle */
 	// Garis-garis sumbu
@@ -55,8 +69,15 @@ void resizeWindow(int width, int height) {  // fungsi biar pas windownya diresiz
 		}
 }
 
-int main(int argc, char *argv[]) {
-	glutInit(&argc, argv);	
+DWORD WINAPI input(LPVOID param) {
+	std::string a;
+	std::cin >> a;
+	std::cout << a << std::endl;
+}
+
+DWORD WINAPI startLoop(LPVOID param) {
+	int argc = 1;
+	glutInit(&argc, NULL);
 
 	glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
 	glutInitWindowSize(600,600);
@@ -66,7 +87,31 @@ int main(int argc, char *argv[]) {
 	glutDisplayFunc(render);		
 	glutReshapeFunc(resizeWindow);	
 
-	glutMainLoop();	// start processing events... 
+	glutMainLoop();
+}
+
+int main(int argc, char *argv[]) {
+
+  int Data_Of_Thread_1 = 1;
+  int Data_Of_Thread_2 = 2;
+
+  HANDLE Handle_Of_Thread_1 = 0;
+  HANDLE Handle_Of_Thread_2 = 0;
+ 	HANDLE Array_Of_Thread_Handles[3];
+
+  Handle_Of_Thread_1 = CreateThread(NULL, 0, startLoop, &Data_Of_Thread_1, 0, NULL);  
+  if (Handle_Of_Thread_1 == NULL)
+      ExitProcess(Data_Of_Thread_1);
+  Handle_Of_Thread_2 = CreateThread(NULL, 0, input, &Data_Of_Thread_2, 0, NULL);  
+  if (Handle_Of_Thread_2 == NULL)
+      ExitProcess(Data_Of_Thread_2);
+
+  Array_Of_Thread_Handles[0] = Handle_Of_Thread_1;
+  Array_Of_Thread_Handles[1] = Handle_Of_Thread_2;
+
+  WaitForMultipleObjects(2, Array_Of_Thread_Handles, TRUE, INFINITE);
+  CloseHandle(Handle_Of_Thread_1);
+  CloseHandle(Handle_Of_Thread_2);
 
 	return 0; // execution never reaches this point 
 }
