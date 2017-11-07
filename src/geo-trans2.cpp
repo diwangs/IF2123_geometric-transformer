@@ -13,20 +13,11 @@ std::string cmd;
 Poly2 polygon(1);
 
 void render(void)	{ /* function called whenever redisplay needed */
+	puts("ahem1");
 	glMatrixMode(GL_MODELVIEW);
 	glClear(GL_COLOR_BUFFER_BIT); // clear the drawing buffer.
 	glLoadIdentity();
 	gluOrtho2D(-500.0, 500.0, -500.0, 500.0);
-	// Kuotak percobaan
-	/* glBegin(GL_POLYGON); { // begin query? 
-		glColor3f(0.0f, 0.0f, 1.0f);    // Color Green
-		glVertex2f(105.0f, 105.0f);    // Top Right Of The Quad (Top)
-		glVertex2f(5.0f, 105.0f);    // Top Left Of The Quad (Top)
-		glVertex2f(5.0f, 5.0f);    // Bottom Left Of The Quad (Top)
-		glVertex2f(105.0f, 5.0f);    // Bottom Right Of The Quad (Top)
-		glVertex2f(55.0f, 55.0f);    // Bottom Right Of The Quad (Top)
-	}
-	glEnd();	*/			/* OpenGL draws the filled triangle */
 	glBegin(GL_POLYGON); {
 		glColor3f(1.0f, 0.0f, 0.0f);
 		for (int i = 0; i < polygon.getEdge(); i++) {
@@ -50,8 +41,7 @@ void render(void)	{ /* function called whenever redisplay needed */
 		glVertex2f(10.0, 490.0);
 		glVertex2f(0.0, 500.0);
 		glVertex2f(-10.0, 490.0);
-	}
-	glEnd();
+	} glEnd();
 	glFlush();				/* Complete any pending operations */
 	cmd = "";
 }
@@ -73,9 +63,40 @@ void resizeWindow(int width, int height) {  // fungsi biar pas windownya diresiz
 }
 
 DWORD WINAPI input(LPVOID param) {
+	puts("ahem2");
+	float cx, cy, deg, cz; // Recycleable
+	std::string parameter;
 	while (1 < 2) {
 		std::cin >> cmd;
-		// command here
+		if (cmd == "translate") {
+			std::cin >> cx >> cy;
+			polygon.translate(cx, cy);
+		} else if (cmd == "dilate") {
+			std::cin >> cx;
+			polygon.dilate(cx);
+		} else if (cmd == "rotate") {
+			std::cin >> deg >> cx >> cy;
+			polygon.rotate(deg, cx, cy);
+		} else if (cmd == "reflect") {
+			std::cin >> parameter;
+			if (parameter == "x") {polygon.reflectByLine(0);}
+			else if (parameter == "y") {polygon.reflectByLine(1);}
+			else if (parameter == "y=x") {polygon.reflectByLine(2);}
+			else if (parameter == "y=-x") {polygon.reflectByLine(3);}
+			else { // doesn't work
+				sscanf(parameter.c_str(), "(%f,%f)", &cx, &cy);
+				polygon.reflectByPoint(cx, cy);
+			}
+		} else if (cmd == "shear") {
+			std::cin >> parameter >> cx;
+		  (parameter == "x") ? polygon.shearByX(cx) : polygon.shearByY(cx);
+		} else if (cmd == "stretch") {
+			std::cin >> parameter >> cx;
+		  (parameter == "x") ? polygon.stretchByX(cx) : polygon.stretchByY(cx);
+		} else if (cmd == "custom") {
+			std::cin >> cx >> cy >> deg >> cz;
+			polygon.customTransform(cx, cy, deg, cz);
+		}
 		glutPostRedisplay();
 	}
 }
@@ -106,13 +127,16 @@ int main(int argc, char *argv[]) {
 	int n;
 	std::cout << "Segi berapa? "; std::cin >> n;
 	polygon.setEdge(n);
- 	float x, y;	Titik2 titikTemp(0.0, 0.0);
+	float x, y;	Titik2 titikTemp(0.0, 0.0);
  	for (int i = 0; i < n; i++) {
-		std::cin >> x >> y;
+		scanf("%f %f", &x, &y);
+		//std::cin >> x >> y;
 		titikTemp.setX(x);
 		titikTemp.setY(y);
+		//printf("%.2f %.2f\n", titikTemp.getX(), titikTemp.getY());
 		polygon.setCorner(i, titikTemp);
- 	}
+	}
+	puts("ahem");
 
   Handle_Of_Thread_1 = CreateThread(NULL, 0, startLoop, NULL, 0, NULL);  
   if (Handle_Of_Thread_1 == NULL) ExitProcess(0);
