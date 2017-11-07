@@ -42,7 +42,7 @@ void Poly2::translate(float dx, float dy) {
 }
 
 void Poly2::animateTranslate(float dx, float dy, int step) {
-  translate(dx*step/60, dy*step/ANIMATION_STEP);
+  translate(dx*step/ANIMATION_STEP, dy*step/ANIMATION_STEP);
 }
 
 void Poly2::dilate(float k) {
