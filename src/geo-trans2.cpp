@@ -7,13 +7,12 @@
 #include <stdio.h>
 #include "inc/poly2.h"
 #include "inc/titik2.h"
+void transform(std::string cmd);
 
 // Globals
-std::string cmd;
 Poly2 polygon(1);
 
 void render(void)	{ /* function called whenever redisplay needed */
-	puts("ahem1");
 	glMatrixMode(GL_MODELVIEW);
 	glClear(GL_COLOR_BUFFER_BIT); // clear the drawing buffer.
 	glLoadIdentity();
@@ -43,7 +42,6 @@ void render(void)	{ /* function called whenever redisplay needed */
 		glVertex2f(-10.0, 490.0);
 	} glEnd();
 	glFlush();				/* Complete any pending operations */
-	cmd = "";
 }
 
 void resizeWindow(int width, int height) {  // fungsi biar pas windownya diresize jadinya gak ngestretch
@@ -63,42 +61,65 @@ void resizeWindow(int width, int height) {  // fungsi biar pas windownya diresiz
 }
 
 DWORD WINAPI input(LPVOID param) {
-	puts("ahem2");
-	float cx, cy, deg, cz; // Recycleable
-	std::string parameter;
+	// Saves original polygon for reset
+	Poly2 original(polygon.getEdge());
+	for (int i = 0; i < original.getEdge(); i++) {
+		original.setCorner(i, polygon.getCorner(i));
+	}
+	
+	std::string cmd;
+	int n;
 	while (1 < 2) {
 		std::cin >> cmd;
-		if (cmd == "translate") {
-			std::cin >> cx >> cy;
-			polygon.translate(cx, cy);
-		} else if (cmd == "dilate") {
-			std::cin >> cx;
-			polygon.dilate(cx);
-		} else if (cmd == "rotate") {
-			std::cin >> deg >> cx >> cy;
-			polygon.rotate(deg, cx, cy);
-		} else if (cmd == "reflect") {
-			std::cin >> parameter;
-			if (parameter == "x") {polygon.reflectByLine(0);}
-			else if (parameter == "y") {polygon.reflectByLine(1);}
-			else if (parameter == "y=x") {polygon.reflectByLine(2);}
-			else if (parameter == "y=-x") {polygon.reflectByLine(3);}
-			else { // doesn't work
-				sscanf(parameter.c_str(), "(%f,%f)", &cx, &cy);
-				polygon.reflectByPoint(cx, cy);
+		if (cmd == "multiple") {
+			std::cin >> n;
+			for (int i = 0; i < n; i++) {
+				std::cout << "... "; std::cin >> cmd;
+				transform(cmd);
 			}
-		} else if (cmd == "shear") {
-			std::cin >> parameter >> cx;
-		  (parameter == "x") ? polygon.shearByX(cx) : polygon.shearByY(cx);
-		} else if (cmd == "stretch") {
-			std::cin >> parameter >> cx;
-		  (parameter == "x") ? polygon.stretchByX(cx) : polygon.stretchByY(cx);
-		} else if (cmd == "custom") {
-			std::cin >> cx >> cy >> deg >> cz;
-			polygon.customTransform(cx, cy, deg, cz);
-		}
+		} else if (cmd == "reset") {
+			for (int i = 0; i < polygon.getEdge(); i++) {
+				polygon.setCorner(i, original.getCorner(i));
+			}
+		} else if (cmd == "exit") {exit;} 
+		else {transform(cmd);}
 		glutPostRedisplay();
+		cmd = "";
 	}
+}
+
+void transform(std::string cmd) {
+	float cx, cy, deg, cz; // Recycleable
+	std::string parameter;
+	if (cmd == "translate") {
+		std::cin >> cx >> cy;
+		polygon.translate(cx, cy);
+	} else if (cmd == "dilate") {
+		std::cin >> cx;
+		polygon.dilate(cx);
+	} else if (cmd == "rotate") {
+		std::cin >> deg >> cx >> cy;
+		polygon.rotate(deg, cx, cy);
+	} else if (cmd == "reflect") {
+		std::cin >> parameter;
+		if (parameter == "x") {polygon.reflectByLine(0);}
+		else if (parameter == "y") {polygon.reflectByLine(1);}
+		else if (parameter == "y=x") {polygon.reflectByLine(2);}
+		else if (parameter == "y=-x") {polygon.reflectByLine(3);}
+		else { // doesn't work
+			sscanf(parameter.c_str(), "(%f,%f)", &cx, &cy);
+			polygon.reflectByPoint(cx, cy);
+		}
+	} else if (cmd == "shear") {
+		std::cin >> parameter >> cx;
+		(parameter == "x") ? polygon.shearByX(cx) : polygon.shearByY(cx);
+	} else if (cmd == "stretch") {
+		std::cin >> parameter >> cx;
+		(parameter == "x") ? polygon.stretchByX(cx) : polygon.stretchByY(cx);
+	} else if (cmd == "custom") {
+		std::cin >> cx >> cy >> deg >> cz;
+		polygon.customTransform(cx, cy, deg, cz);
+	} else {std::cout << "Invalid command" << std::endl;}
 }
 
 DWORD WINAPI startLoop(LPVOID param) {
@@ -129,14 +150,11 @@ int main(int argc, char *argv[]) {
 	polygon.setEdge(n);
 	float x, y;	Titik2 titikTemp(0.0, 0.0);
  	for (int i = 0; i < n; i++) {
-		scanf("%f %f", &x, &y);
-		//std::cin >> x >> y;
+		std::cin >> x >> y;
 		titikTemp.setX(x);
 		titikTemp.setY(y);
-		//printf("%.2f %.2f\n", titikTemp.getX(), titikTemp.getY());
 		polygon.setCorner(i, titikTemp);
 	}
-	puts("ahem");
 
   Handle_Of_Thread_1 = CreateThread(NULL, 0, startLoop, NULL, 0, NULL);  
   if (Handle_Of_Thread_1 == NULL) ExitProcess(0);
