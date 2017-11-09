@@ -81,7 +81,7 @@ DWORD WINAPI input(LPVOID param) {
 			for (int i = 0; i < polygon.getEdge(); i++) {
 				polygon.setCorner(i, original.getCorner(i));
 			}
-		} else if (cmd == "exit") {exit;} 
+		} else if (cmd == "exit") {exit(0);} 
 		else {transform(cmd);}
 		glutPostRedisplay();
 		cmd = "";
@@ -104,8 +104,8 @@ void transform(std::string cmd) {
 		std::cin >> parameter;
 		if (parameter == "x") {polygon.reflectByLine(0);}
 		else if (parameter == "y") {polygon.reflectByLine(1);}
-		else if (parameter == "y=x") {polygon.reflectByLine(2);}
-		else if (parameter == "y=-x") {polygon.reflectByLine(3);}
+		else if (parameter == "y=x" || parameter == "x=y") {polygon.reflectByLine(2);}
+		else if (parameter == "y=-x" || parameter == "x=-y") {polygon.reflectByLine(3);}
 		else { // doesn't work
 			sscanf(parameter.c_str(), "(%f,%f)", &cx, &cy);
 			polygon.reflectByPoint(cx, cy);
@@ -138,6 +138,7 @@ DWORD WINAPI startLoop(LPVOID param) {
 }
 
 int main(int argc, char *argv[]) {
+
   int Data_Of_Thread_1 = 1;
   int Data_Of_Thread_2 = 2;
 
@@ -146,6 +147,14 @@ int main(int argc, char *argv[]) {
 	HANDLE Array_Of_Thread_Handles[3];
 
 	int n;
+	std::cout << "   ____                    _____ _      \n";
+	std::cout << "  / __ \\                  / ____| |     \n";
+	std::cout << " | |  | |_ __   ___ _ __ | |  __| |     \n";
+	std::cout << " | |  | | '_ \\ / _ \\ '_ \\| | |_ | |     \n";
+	std::cout << " | |__| | |_) |  __/ | | | |__| | |____ \n";
+	std::cout << "  \\____/| .__/ \\___|_| |_|\\_____|______|\n";
+	std::cout << "        | |                             \n";
+	std::cout << "        |_|                             \n\n";
 	std::cout << "Segi berapa? "; std::cin >> n;
 	polygon.setEdge(n);
 	float x, y;	Titik2 titikTemp(0.0, 0.0);
