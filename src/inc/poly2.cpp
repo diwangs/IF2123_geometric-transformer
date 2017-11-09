@@ -124,7 +124,7 @@ void Poly2::animateShearByY(float k, int step) {
 void Poly2::stretchByX(float k) {
   for (int i=0; i<getEdge(); i++) {
     Titik2 corner = getCorner(i);
-    corner.shearByX(k);
+    corner.stretchByX(k);
     setCorner(i, corner);
   }
 }
@@ -136,7 +136,7 @@ void Poly2::animateStretchByX(float k, int step) {
 void Poly2::stretchByY(float k) {
   for (int i=0; i<getEdge(); i++) {
     Titik2 corner = getCorner(i);
-    corner.shearByY(k);
+    corner.stretchByY(k);
     setCorner(i, corner);
   }
 }
