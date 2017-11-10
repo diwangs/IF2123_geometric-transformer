@@ -88,12 +88,29 @@ DWORD WINAPI input(LPVOID param) {
 	}
 }
 
+void redisplay() {
+	glutSwapBuffers();
+	glutPostRedisplay();
+	glutSwapBuffers();
+}
+
 void transform(std::string cmd) {
 	float cx, cy, deg, cz; // Recycleable
 	std::string parameter;
 	if (cmd == "translate") {
 		std::cin >> cx >> cy;
-		polygon.translate(cx, cy);
+		Poly2 before(polygon.getEdge());
+		for (int i=0; i<polygon.getEdge(); i++) {
+			before.setCorner(i, polygon.getCorner(i));
+		}
+		for (int step=0; step<=ANIMATION_STEP; step++) {
+			for (int i=0; i<polygon.getEdge(); i++) {
+				polygon.setCorner(i, before.getCorner(i));
+			}
+			polygon.animateTranslate(cx, cy, step);
+			redisplay();
+			Sleep(100);
+		}
 	} else if (cmd == "dilate") {
 		std::cin >> cx;
 		polygon.dilate(cx);
